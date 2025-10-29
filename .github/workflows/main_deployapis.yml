@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read # Required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -24,14 +24,14 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Create and Start virtual environment and Install dependencies
+      - name: Create and start virtual environment + install dependencies
         working-directory: ./APIs
         run: |
           python -m venv antenv
           source antenv/bin/activate
           pip install -r requirements.txt
                 
-      - name: Upload artifact for deployment jobs
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: python-app
@@ -43,15 +43,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read # This is required for actions/checkout
+      id-token: write # Required for JWT request
+      contents: read # Required for actions/checkout
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: python-app
-      
+          path: .
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -65,4 +66,4 @@ jobs:
         with:
           app-name: 'DeployAPIs'
           slot-name: 'Production'
-          package: './APIs'
+          package: '.'
