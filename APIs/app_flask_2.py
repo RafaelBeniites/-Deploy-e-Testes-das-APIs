@@ -2,6 +2,11 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+# --- Rota principal ---
+@app.route("/")
+def home():
+    return "<h1>API Flask no Azure!</h1><p>Use /items para ver os dados.</p>"
+
 # Base simulada
 items = [
     {"id": 1, "name": "Item 1"},
